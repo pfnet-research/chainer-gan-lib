@@ -44,7 +44,9 @@ Quantitative evaluation
 | [minibatch discrimination](https://arxiv.org/abs/1606.03498)  | 7.0 | 6.86 (-L+HA) | 31.3 |
 | [BEGAN](https://arxiv.org/abs/1703.10717)  | 5.4 | 5.62 | 84.0 |
 
+Inception scores are calculated by average of 10 evaluation with 5000 samples.
 
+FIDs are calculated with 50000 train dataset and 10000 generated samples.
 
 Generated images
 -------
