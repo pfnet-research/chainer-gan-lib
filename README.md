@@ -27,8 +27,9 @@ Download the inception model.
 cd common/inception
 python download.py --outfile inception_score.model
 ```
-Run `python train.py` in each algorithm directory to start a training with default parameters.
-
+You can start training following.
+`python train.py --gpu 0 --algorithm dcgan --out result_dcgan`
+Please see `example.sh` to train other algorithms.
 
 Quantitative evaluation
 -------
