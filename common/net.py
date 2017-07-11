@@ -16,7 +16,8 @@ def add_noise(h, sigma=0.2):
         return h + sigma * xp.random.randn(*h.data.shape)
 
 
-# differenciable backward functions
+# differentiable backward functions
+
 def backward_linear(x_in, x, l):
     y = F.matmul(x, l.W)
     return y
