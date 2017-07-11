@@ -1,3 +1,4 @@
+import glob
 import os
 
 import numpy as np
@@ -21,6 +22,18 @@ class Cifar10Dataset(dataset_mixin.DatasetMixin):
 
     def get_example(self, i):
         return self.ims[i]
+
+
+class LocalImageDataset(dataset_mixin.DatasetMixin):
+    def __init__(self, directory):
+        self.path_list = glob.glob(directory + '/*')
+
+    def __len__(self):
+        return len(self.path_list)
+
+    def get_example(self, i):
+        img = Image.open(self.path_list[i])
+        return image_to_np(img)
 
 
 def image_to_np(img):

@@ -32,10 +32,12 @@ class Discriminator(chainer.Chain):
 
 
 class Denoiser(chainer.Chain):
-    def __init__(self):
+    def __init__(self, bottom_width=2, ch=512):
+        self.bottom_width = bottom_width
+        self.ch = ch
         super(Denoiser, self).__init__()
         with self.init_scope():
-            self.l0 = L.Linear(2048, 2048)
+            self.l0 = L.Linear(bottom_width * bottom_width * ch, 2048)
             self.l1 = L.Linear(2048, 2048)
             self.l2 = L.Linear(2048, 2048)
             self.l3 = L.Linear(2048, 2048)
@@ -44,7 +46,7 @@ class Denoiser(chainer.Chain):
             self.l6 = L.Linear(2048, 2048)
             self.l7 = L.Linear(2048, 2048)
             self.l8 = L.Linear(2048, 2048)
-            self.l9 = L.Linear(2048, 2048)
+            self.l9 = L.Linear(2048, bottom_width * bottom_width * ch)
             self.bn0 = L.BatchNormalization(2048)
             self.bn1 = L.BatchNormalization(2048)
             self.bn2 = L.BatchNormalization(2048)
@@ -56,7 +58,7 @@ class Denoiser(chainer.Chain):
             self.bn8 = L.BatchNormalization(2048)
 
     def __call__(self, x):
-        h = F.reshape(x, (len(x), 2048))
+        h = F.reshape(x, (len(x), self.bottom_width * self.bottom_width * self.ch))
         h = F.leaky_relu(self.bn0(self.l0(h)))
         h = F.leaky_relu(self.bn1(self.l1(h)))
         h = F.leaky_relu(self.bn2(self.l2(h)))
@@ -66,4 +68,4 @@ class Denoiser(chainer.Chain):
         h = F.leaky_relu(self.bn6(self.l6(h)))
         h = F.leaky_relu(self.bn7(self.l7(h)))
         h = F.leaky_relu(self.bn8(self.l8(h)))
-        return F.reshape(self.l9(h), (len(x), 512, 2, 2))
+        return F.reshape(self.l9(h), (len(x), self.ch, self.bottom_width, self.bottom_width))

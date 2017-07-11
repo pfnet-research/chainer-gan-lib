@@ -7,6 +7,8 @@ import chainer
 class Discriminator(chainer.Chain):
     def __init__(self, bottom_width=4, ch=512, wscale=0.02, B=100, C=5):
         w = chainer.initializers.Normal(wscale)
+        self.bottom_width = bottom_width
+        self.ch = ch
         self.B = B
         self.C = C
         super(Discriminator, self).__init__()
@@ -35,7 +37,7 @@ class Discriminator(chainer.Chain):
         h = F.leaky_relu(self.bn1_1(self.c1_1(h)))
         h = F.leaky_relu(self.bn2_0(self.c2_0(h)))
         h = F.leaky_relu(self.bn2_1(self.c2_1(h)))
-        feature = F.reshape(F.leaky_relu(self.c3_0(h)), (N, 8192))
+        feature = F.reshape(F.leaky_relu(self.c3_0(h)), (N, self.bottom_width * self.bottom_width * self.ch))
         m = F.reshape(self.md(feature), (N, self.B * self.C, 1))
         m0 = F.broadcast_to(m, (N, self.B * self.C, N))
         m1 = F.transpose(m0, (2, 1, 0))

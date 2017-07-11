@@ -2,3 +2,7 @@ chainer==2.0.0
 cupy==1.0.0.1
 tensorflow==1.2.0
 numpy==1.11.1
+pillow
+scipy
+h5py
+
