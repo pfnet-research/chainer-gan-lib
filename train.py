@@ -62,7 +62,18 @@ def main():
         else:
             raise NotImplementedError()
         models = [generator, discriminator]
-
+    elif args.algorithm == "stdgan":
+        from stdgan.updater import Updater
+        updater_args["n_dis"] = args.n_dis
+        if args.architecture=="dcgan":
+            generator = common.net.DCGANGenerator()
+            discriminator = common.net.DCGANDiscriminator()
+        elif args.architecture=="sndcgan":
+            generator = common.net.DCGANGenerator()
+            discriminator = common.net.SNDCGANDiscriminator()
+        else:
+            raise NotImplementedError()
+        models = [generator, discriminator]
     elif args.algorithm == "dfm":
         from dfm.net import Discriminator, Denoiser
         from dfm.updater import Updater
@@ -75,7 +86,6 @@ def main():
         opts["opt_den"] = make_optimizer(denoiser, args.adam_alpha, args.adam_beta1, args.adam_beta2)
         report_keys.append("loss_den")
         models = [generator, discriminator, denoiser]
-
     elif args.algorithm == "minibatch_discrimination":
         from minibatch_discrimination.net import Discriminator
         from minibatch_discrimination.updater import Updater

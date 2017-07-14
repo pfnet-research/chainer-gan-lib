@@ -39,6 +39,7 @@ Quantitative evaluation
 | | [Inception](https://arxiv.org/abs/1606.03498) | Inception (Official) | [FID](https://arxiv.org/abs/1706.08500) |
 | ------------- | ------------- | ------------- | ------------- |
 | Real data  | 12.0 | 11.24 | 3.2 (train vs test) |
+| [SN-DCGAN](https://drive.google.com/file/d/0B8HZ50DPgR3eSVV6YlF3XzQxSjQ/view?usp=sharing)  | 7.5 | 7.41 | 23.6 |
 | [WGAN-GP](https://arxiv.org/abs/1704.00028)  | 6.8 | 7.86 (ResNet) | 28.2 |
 | [DFM](https://openreview.net/pdf?id=S1X7nhsxl)  | 7.3 | 7.72 | 30.1 |
 | [Cramer GAN](https://arxiv.org/abs/1705.10743) | 6.4 | - | 32.7 |
@@ -53,6 +54,10 @@ FIDs are calculated with 50000 train dataset and 10000 generated samples.
 
 Generated images
 -------
+
+- SN-DCGAN
+
+![sndcagn](./images/sndcgan.png)
 
 - WGAN-GP
 
