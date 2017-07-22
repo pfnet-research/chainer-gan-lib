@@ -84,7 +84,7 @@ class SNConvolution2D(Convolution2D):
         super(SNConvolution2D, self)._initialize_params(in_size)
         if self.use_gamma:
             W_mat = self.W.data.reshape(self.W.shape[0], -1)
-            _, s, _ = np.linalg.svd(self.W.data)
+            _, s, _ = np.linalg.svd(W_mat)
             with self.init_scope():
                 self.gamma = chainer.Parameter(s[0], (1, 1, 1, 1))
 
