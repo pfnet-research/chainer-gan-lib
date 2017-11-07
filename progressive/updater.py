@@ -36,11 +36,6 @@ class Updater(chainer.training.StandardUpdater):
             x_real = Variable(xp.asarray(x))
 
             self.stage = self.counter / self.stage_interval
-            #if math.floor(self.counter/self.stage_interval) != \
-            #    math.floor((self.counter-batchsize)/self.stage_interval):
-            #    print(self.counter/self.stage_interval)
-            #    gen_optimizer.t = 0
-            #    dis_optimizer.t = 0
 
             if math.floor(self.stage)%2==0:
                 reso = min(32, 4 * 2**(((math.floor(self.stage)+1)//2)))
@@ -76,7 +71,6 @@ class Updater(chainer.training.StandardUpdater):
             y_mid = F.sum(self.dis(x_mid_v, stage=self.stage))
 
             dydx, = chainer.grad([y_mid], [x_mid_v], enable_double_backprop=True)
-            #dydx = self.dis.differentiable_backward(xp.ones_like(y_mid.data))
             dydx = F.sqrt(F.sum(dydx*dydx, axis=(1, 2, 3)))
             loss_gp = self.lam * F.mean_squared_error(dydx, self.gamma * xp.ones_like(dydx.data)) * (1.0/self.gamma**2)
 
@@ -89,11 +83,8 @@ class Updater(chainer.training.StandardUpdater):
             loss_dis_total = loss_dis + loss_gp
             self.dis.cleargrads()
             loss_dis_total.backward()
-            #loss_gp.backward()
             dis_optimizer.update()
             loss_dis_total.unchain_backward()
-            #loss_gp.unchain_bakward()
-
 
             # train generator
             z = Variable(xp.asarray(self.gen.make_hidden(batchsize)))

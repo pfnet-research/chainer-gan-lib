@@ -48,9 +48,7 @@ class EqualizedDeconv2d(chainer.Chain):
         return self.c(self.inv_c * x)
 
 def minibatch_std(x):
-    xp = chainer.cuda.get_array_module(x)
     m = F.mean(x, axis=0, keepdims=True)
-    # double bp ga dekinai node **2 wo tsukawa nai
     v = F.mean((x - F.broadcast_to(m, x.shape))*(x - F.broadcast_to(m, x.shape)), axis=0, keepdims=True)
     std = F.mean(F.sqrt(v + 1e-8), keepdims=True)
     std = F.broadcast_to(std, (x.shape[0], 1, x.shape[2], x.shape[3]))
@@ -62,7 +60,6 @@ class GeneratorBlock(chainer.Chain):
         with self.init_scope():
             self.c0 = EqualizedConv2d(in_ch, out_ch, 3, 1, 1)
             self.c1 = EqualizedConv2d(out_ch, out_ch, 3, 1, 1)
-            #self.toRGB = F.Convolution2D(out_ch, 3, 1, 1, 0)
     def __call__(self, x):
         h = F.unpooling_2d(x, 2, 2, 0, outsize=(x.shape[2]*2, x.shape[3]*2))
         h = F.leaky_relu(feature_vector_normalization(self.c0(h)))
@@ -101,6 +98,7 @@ class Generator(chainer.Chain):
         # stage2: c0->c1->b1->out1
         # stage3: c0->c1->b1-> (1-a)*(up->out1) + (a)*(b2->out2)
         # stage4: c0->c1->b2->out2
+        # ...
 
         stage = min(stage, self.max_stage)
         alpha = stage - math.floor(stage)
@@ -108,7 +106,6 @@ class Generator(chainer.Chain):
 
         h = F.reshape(z,(len(z), self.n_hidden, 1, 1))
         h = F.leaky_relu(feature_vector_normalization(self.c0(h)))
-        #h = F.leaky_relu((self.c0(h)))
         h = F.leaky_relu(feature_vector_normalization(self.c1(h)))
 
         for i in range(1, int(stage//2+1)):
@@ -141,7 +138,6 @@ class DiscriminatorBlock(chainer.Chain):
         with self.init_scope():
             self.c0 = EqualizedConv2d(in_ch, in_ch, 3, 1, 1)
             self.c1 = EqualizedConv2d(in_ch, out_ch, 3, 1, 1)
-            #self.toRGB = F.Convolution2D(out_ch, 3, 1, 1, 0)
     def __call__(self, x):
         h = F.leaky_relu((self.c0(x)))
         h = F.leaky_relu((self.c1(h)))
@@ -173,12 +169,11 @@ class Discriminator(chainer.Chain):
         # stage2: in1->b1->m_std->out0_0->out0_1->out0_2
         # stage3: (1-a)*(down->in1) + (a)*(in2->b2) ->b1->m_std->out0->out1->out2
         # stage4: in2->b2->b1->m_std->out0->out1->out2
+        # ...
 
         stage = min(stage, self.max_stage)
         alpha = stage - math.floor(stage)
         stage = math.floor(stage)
-        #print(stage, alpha)
-        #print(x.shape)
 
         if int(stage)%2==0:
             fromRGB = getattr(self, "in%d"%(stage//2))
@@ -193,14 +188,10 @@ class Discriminator(chainer.Chain):
             h1 = b1(F.leaky_relu(fromRGB1(x)))
             h = (1-alpha)*h0 + alpha*h1
 
-        #print(h.shape)
         for i in range(int(stage // 2), 0, -1):
             h = getattr(self, "b%d" % i)(h)
-            #print(i, h.shape)
 
         h = minibatch_std(h)
-        #print(h.shape)
         h = F.leaky_relu((self.out0(h)))
-        #print(h.shape)
         h = F.leaky_relu((self.out1(h)))
         return self.out2(h)
