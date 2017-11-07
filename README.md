@@ -39,7 +39,7 @@ Quantitative evaluation
 | | [Inception](https://arxiv.org/abs/1606.03498) | Inception (Official) | [FID](https://arxiv.org/abs/1706.08500) |
 | ------------- | ------------- | ------------- | ------------- |
 | Real data  | 12.0 | 11.24 | 3.2 (train vs test) |
-| [Progressive](http://research.nvidia.com/publication/2017-10_Progressive-Growing-of)  | 8.8 | 8.54 | 19.1 |
+| [Progressive](http://research.nvidia.com/publication/2017-10_Progressive-Growing-of)  | 8.5 | 8.8 | 19.1 |
 | [SN-DCGAN](https://drive.google.com/file/d/0B8HZ50DPgR3eSVV6YlF3XzQxSjQ/view?usp=sharing)  | 7.5 | 7.41 | 23.6 |
 | [WGAN-GP](https://arxiv.org/abs/1704.00028)  | 6.8 | 7.86 (ResNet) | 28.2 |
 | [DFM](https://openreview.net/pdf?id=S1X7nhsxl)  | 7.3 | 7.72 | 30.1 |
