@@ -56,6 +56,10 @@ FIDs are calculated with 50000 train dataset and 10000 generated samples.
 Generated images
 -------
 
+- Progressive
+
+![progressive](./images/progressive.png)
+
 - SN-DCGAN
 
 ![sndcagn](./images/sndcgan.png)
