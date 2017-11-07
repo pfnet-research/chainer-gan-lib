@@ -44,8 +44,6 @@ def main():
                         help='gradient penalty')
     parser.add_argument('--gamma', type=float, default=750,
                         help='gradient penalty')
-    parser.add_argument('--model', type=str, default="dcgan",
-                        help='Network architecture (dcgan or resnet)')
     parser.add_argument('--pooling_comp', type=float, default=1.0,
                         help='compensation')
     parser.add_argument('--pretrained_generator', type=str, default="")
