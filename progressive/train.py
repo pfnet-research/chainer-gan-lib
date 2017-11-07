@@ -1,5 +1,3 @@
-# python train.py --gpu 0 --out result9_2 --pooling_comp 1.0 --pretrained_generator ./result9/generator_400000.npz --pretrained_discriminator ./result9/discriminator_400000.npz --initial_stage 8
-
 import argparse
 import os
 import sys
