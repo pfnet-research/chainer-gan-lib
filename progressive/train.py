@@ -19,6 +19,37 @@ from updater import Updater
 
 from common.misc import copy_param
 
+import numpy as np
+import chainer.functions as F
+from chainer import Variable
+try:
+    x = Variable(np.asarray([1, 2, 3], dtype="f"))
+    y = F.sum(1.0/x)
+    y.backward(enable_double_backprop=True, retain_grad=True)
+    (F.sum(x.grad_var)).backward()
+except:
+    print("This code uses double-bp of DivFromConstant (not yet merged).")
+    print("Please merge this PR: https://github.com/chainer/chainer/pull/3615 to chainer.")
+    print("    (in chainer repository)")
+    print("    git fetch origin pull/3615/head:rdiv")
+    print("    git merge rdiv")
+    print("    (reinstall chainer")
+    exit(0)
+
+try:
+    x = Variable(np.asarray([1, 2, 3], dtype="f"))
+    y = F.sum(F.sqrt(x))
+    y.backward(enable_double_backprop=True, retain_grad=True)
+    (F.sum(x.grad_var)).backward()
+except:
+    print("This code uses double-bp of Sqrt (not yet merged).")
+    print("Please merge this PR: https://github.com/chainer/chainer/pull/3581 to chainer")
+    print("    (in chainer repository)")
+    print("    git fetch origin pull/3581/head:sqrt")
+    print("    git merge sqrt")
+    print("    (reinstall chainer")
+    exit(0)
+
 def main():
     parser = argparse.ArgumentParser(
         description='Train script')
