@@ -14,6 +14,8 @@ This implementation has been tested with the following versions.
 ```
 python 3.5.2
 chainer 4.0.0
++ https://github.com/chainer/chainer/pull/3615
++ https://github.com/chainer/chainer/pull/3581
 cupy 3.0.0
 tensorflow 1.2.0 # only for downloading inception model
 numpy 1.11.1
