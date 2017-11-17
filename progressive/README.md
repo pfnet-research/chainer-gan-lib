@@ -1,5 +1,5 @@
 # Progressive Growing of GANs
-An implementation of [_Karras et al., "Progressive Growing of GANs for Improved Quality, Stability, and Variation", 2017_](https://arxiv.org/abs/1710.101966) using Chainer.
+An implementation of [_Karras et al., "Progressive Growing of GANs for Improved Quality, Stability, and Variation", 2017_](https://arxiv.org/abs/1710.10196) using Chainer.
 
 Results
 -------
