@@ -3,12 +3,14 @@ An implementation of [_Karras et al., "Progressive Growing of GANs for Improved 
 
 Results
 -------
-CIFAR10
+CIFAR10 (inception score: 8.5)
 <p align="center">
-  <img src="../images/progressive.png" height="480" width="480" alt="CIFAR10"/>
+  <img src="../images/progressive.png" height="320" width="320" alt="CIFAR10"/>
 </p>
 
-Illustration
+Illustration (512x512, cherry picked)
 <p align="center">
-  <img src="../images/pggan_s.png" height="480" width="480" alt="solo"/> <img src="../images/pggan_y.png" height="480" width="480" alt="yuri"/>
+  <img src="../images/pggan_s.png" height="768" width="768" alt="solo"/> 
+  <br>
+  <img src="../images/pggan_y.png" height="768" width="768" alt="yuri"/>
 </p>
