@@ -9,7 +9,7 @@ from chainer.training import extensions
 
 sys.path.append(os.path.dirname(__file__))
 
-from common.dataset import Cifar10Dataset
+from common.dataset import Cifar10Dataset, LocalImageDataset
 from common.evaluation import sample_generate, sample_generate_light, calc_inception, calc_FID
 from common.record import record_setting
 import common.net
@@ -21,6 +21,8 @@ def make_optimizer(model, alpha, beta1, beta2):
 
 def main():
     parser = argparse.ArgumentParser(description='Train script')
+    parser.add_argument('--dataset', '-i', help='Directory of image files.  Default is cifar-10.')
+    parser.add_argument('--image_width', type=int, default=32, help='width of the dataset image')
     parser.add_argument('--algorithm', '-a', type=str, default="dcgan", help='GAN algorithm')
     parser.add_argument('--architecture', type=str, default="dcgan", help='Network architecture')
     parser.add_argument('--batchsize', type=int, default=64)
@@ -43,7 +45,10 @@ def main():
     report_keys = ["loss_dis", "loss_gen", "inception_mean", "inception_std", "FID"]
 
     # Set up dataset
-    train_dataset = Cifar10Dataset()
+    if args.dataset is None:
+        train_dataset = Cifar10Dataset()
+    else:
+        train_dataset = LocalImageDataset(directory=args.dataset)
     train_iter = chainer.iterators.SerialIterator(train_dataset, args.batchsize)
 
     # Setup algorithm specific networks and updaters
@@ -57,8 +62,8 @@ def main():
     if args.algorithm == "dcgan":
         from dcgan.updater import Updater
         if args.architecture=="dcgan":
-            generator = common.net.DCGANGenerator()
-            discriminator = common.net.DCGANDiscriminator()
+            generator = common.net.DCGANGenerator(bottom_width=args.image_width//2**3)
+            discriminator = common.net.DCGANDiscriminator(bottom_width=args.image_width//2**3)
         else:
             raise NotImplementedError()
         models = [generator, discriminator]
@@ -78,9 +83,9 @@ def main():
         from dfm.net import Discriminator, Denoiser
         from dfm.updater import Updater
         if args.architecture=="dcgan":
-            generator = common.net.DCGANGenerator()
-            discriminator = Discriminator()
-            denoiser = Denoiser()
+            generator = common.net.DCGANGenerator(bottom_width=args.image_width//2**3)
+            discriminator = Discriminator(bottom_width=args.image_width//2**4)
+            denoiser = Denoiser(bottom_width=args.image_width//2**4)
         else:
             raise NotImplementedError()
         opts["opt_den"] = make_optimizer(denoiser, args.adam_alpha, args.adam_beta1, args.adam_beta2)
@@ -90,8 +95,8 @@ def main():
         from minibatch_discrimination.net import Discriminator
         from minibatch_discrimination.updater import Updater
         if args.architecture=="dcgan":
-            generator = common.net.DCGANGenerator()
-            discriminator = Discriminator()
+            generator = common.net.DCGANGenerator(bottom_width=args.image_width//2**3)
+            discriminator = Discriminator(bottom_width=args.image_width//2**3)
         else:
             raise NotImplementedError()
         models = [generator, discriminator]
@@ -100,8 +105,8 @@ def main():
         from began.net import Discriminator
         from began.updater import Updater
         if args.architecture=="dcgan":
-            generator = common.net.DCGANGenerator(use_bn=False)
-            discriminator = Discriminator()
+            generator = common.net.DCGANGenerator(bottom_width=args.image_width//2**3, use_bn=False)
+            discriminator = Discriminator(bottom_width=args.image_width//2**3)
         else:
             raise NotImplementedError()
         models = [generator, discriminator]
@@ -112,8 +117,8 @@ def main():
     elif args.algorithm == "cramer":
         from cramer.updater import Updater
         if args.architecture=="dcgan":
-            generator = common.net.DCGANGenerator()
-            discriminator = common.net.WGANDiscriminator(output_dim=args.output_dim)
+            generator = common.net.DCGANGenerator(bottom_width=args.image_width//2**3)
+            discriminator = common.net.WGANDiscriminator(bottom_width=args.image_width//2**3, output_dim=args.output_dim)
         else:
             raise NotImplementedError()
         models = [generator, discriminator]
@@ -124,8 +129,8 @@ def main():
     elif args.algorithm == "dragan":
         from dragan.updater import Updater
         if args.architecture=="dcgan":
-            generator = common.net.DCGANGenerator()
-            discriminator = common.net.WGANDiscriminator()
+            generator = common.net.DCGANGenerator(bottom_width=args.image_width//2**3)
+            discriminator = common.net.WGANDiscriminator(bottom_width=args.image_width//2**3)
         else:
             raise NotImplementedError()
         models = [generator, discriminator]
@@ -136,8 +141,8 @@ def main():
     elif args.algorithm == "wgan_gp":
         from wgan_gp.updater import Updater
         if args.architecture=="dcgan":
-            generator = common.net.DCGANGenerator()
-            discriminator = common.net.WGANDiscriminator()
+            generator = common.net.DCGANGenerator(bottom_width=args.image_width//2**3)
+            discriminator = common.net.WGANDiscriminator(bottom_width=args.image_width//2**3)
         else:
             raise NotImplementedError()
         models = [generator, discriminator]

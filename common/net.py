@@ -225,6 +225,7 @@ class SNDCGANDiscriminator(chainer.Chain):
 class WGANDiscriminator(chainer.Chain):
     def __init__(self, bottom_width=4, ch=512, wscale=0.02, output_dim=1):
         w = chainer.initializers.Normal(wscale)
+        self.bottom_width = bottom_width
         super(WGANDiscriminator, self).__init__()
         with self.init_scope():
             self.c0 = L.Convolution2D(3, ch // 8, 3, 1, 1, initialW=w)
@@ -249,7 +250,7 @@ class WGANDiscriminator(chainer.Chain):
 
     def differentiable_backward(self, x):
         g = backward_linear(self.h6, x, self.l4)
-        g = F.reshape(g, (x.shape[0], 512, 4, 4))
+        g = F.reshape(g, (x.shape[0], 512, self.bottom_width, self.bottom_width))
         g = backward_leaky_relu(self.h6, g, 0.2)
         g = backward_convolution(self.h5, g, self.c3_0)
         g = backward_leaky_relu(self.h5, g, 0.2)
