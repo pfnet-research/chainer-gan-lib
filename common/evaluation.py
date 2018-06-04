@@ -139,9 +139,9 @@ def get_mean_cov(model, ims, batch_size=100):
             y = model(ims_batch, get_feature=True)
         ys[batch_start:batch_end] = y.data
 
-    mean = xp.mean(ys, axis=0).get()
+    mean = chainer.cuda.to_cpu(xp.mean(ys, axis=0))
     # cov = F.cross_covariance(ys, ys, reduce="no").data.get()
-    cov = np.cov(ys.get().T)
+    cov = np.cov(chainer.cuda.to_cpu(ys).T)
 
     return mean, cov
 
