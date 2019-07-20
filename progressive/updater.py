@@ -33,6 +33,7 @@ class Updater(chainer.training.StandardUpdater):
             x = []
             for j in range(batchsize):
                 x.append(np.asarray(batch[j]).astype("f"))
+            x = (x - 127.5) / 127.5
             x_real = Variable(xp.asarray(x))
 
             self.stage = self.counter / self.stage_interval
